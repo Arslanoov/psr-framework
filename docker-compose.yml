@@ -7,7 +7,7 @@ services:
     volumes:
       - ./furious:/app
     ports:
-      - "8080:80"
+      - "8086:80"
     depends_on:
       - furious-php-fpm
 
