@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Aura\Router\RouterContainer;
+use Framework\Http\ApplicationInterface;
 use Infrastructure\Framework\Http\Application;
 use Infrastructure\Framework\Http\Router\AuraRouterAdapter;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
@@ -14,7 +15,12 @@ define('ENV', 'dev');
 
 require './vendor/autoload.php';
 
-require __DIR__ . './config/routes.php';
+$container = require './config/container.php';
+
+$application = $container->get(ApplicationInterface::class);
+
+(require './config/app/routes/index.php')($application);
+(require './config/app/pipeline/index.php')($application);
 
 $psr17Factory = new Psr17Factory();
 
@@ -27,8 +33,7 @@ $creator = new ServerRequestCreator(
 
 $serverRequest = $creator->fromGlobals();
 
-// TODO: Add DI
-$response = (new Application(new AuraRouterAdapter(new RouterContainer())))->run($serverRequest);
+$response = $application->run($serverRequest);
 
 if (ENV === 'dev') {
     $response = $response->withHeader('X-Developer', 'Arslanoov');

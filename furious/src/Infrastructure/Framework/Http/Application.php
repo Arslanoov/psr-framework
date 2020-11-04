@@ -5,22 +5,32 @@ declare(strict_types=1);
 namespace Infrastructure\Framework\Http;
 
 use Framework\Http\ApplicationInterface;
+use Framework\Http\Pipeline\MiddlewarePipelineInterface;
+use Framework\Http\Pipeline\MiddlewareResolverInterface;
+use Framework\Http\Pipeline\PathMiddlewareDecorator;
 use Framework\Http\Router\RouteData;
 use Framework\Http\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 final class Application implements ApplicationInterface
 {
     private RouterInterface $router;
+    private RequestHandlerInterface $default;
+    private MiddlewareResolverInterface $resolver;
+    private MiddlewarePipelineInterface $pipeline;
 
-    /**
-     * Application constructor.
-     * @param RouterInterface $router
-     */
-    public function __construct(RouterInterface $router)
-    {
+    public function __construct(
+        RouterInterface $router,
+        RequestHandlerInterface $default,
+        MiddlewareResolverInterface $resolver,
+        MiddlewarePipelineInterface $pipeline
+    ) {
         $this->router = $router;
+        $this->default = $default;
+        $this->resolver = $resolver;
+        $this->pipeline = $pipeline;
     }
 
     public function get(string $name, string $path, string $handler, array $options = []): void
@@ -48,6 +58,11 @@ final class Application implements ApplicationInterface
         $this->addRoute($name, $path, $handler, ['DELETE'], $options);
     }
 
+    public function getRouter(): RouterInterface
+    {
+        return $this->router;
+    }
+
     public function customMethodsRoute(
         string $name,
         string $path,
@@ -65,6 +80,25 @@ final class Application implements ApplicationInterface
 
     public function run(ServerRequestInterface $request): ResponseInterface
     {
-        // TODO: Add psr15 package
+        return $this->handle($request);
+    }
+
+    public function pipe($path, $middleware = null): void
+    {
+        if ($middleware === null) {
+            $this->pipeline->pipe($this->resolver->resolve($path));
+        } else {
+            $this->pipeline->pipe(new PathMiddlewareDecorator($path, $this->resolver->resolve($middleware)));
+        }
+    }
+
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        return $this->pipeline->process($request, $handler);
+    }
+
+    private function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->pipeline->process($request, $this->default);
     }
 }
