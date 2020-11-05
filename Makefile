@@ -1,4 +1,4 @@
-up: docker-clear docker-build docker-up composer-install
+up: docker-clear docker-build docker-up composer-install validate
 validate: check test
 check: lint cs psalm
 test: tests-run
