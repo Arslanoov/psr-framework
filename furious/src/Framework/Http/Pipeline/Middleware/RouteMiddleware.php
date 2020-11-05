@@ -25,6 +25,10 @@ final class RouteMiddleware implements MiddlewareInterface
     {
         try {
             $result = $this->router->match($request);
+            /**
+             * @var string $attribute
+             * @var mixed $value
+             */
             foreach ($result->getParams() as $attribute => $value) {
                 $request = $request->withAttribute($attribute, $value);
             }

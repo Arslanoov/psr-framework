@@ -7,6 +7,7 @@ namespace Framework\Http;
 use Framework\Http\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 interface ApplicationInterface
@@ -31,7 +32,11 @@ interface ApplicationInterface
 
     public function getRouter(): RouterInterface;
 
-    public function pipe($path, $middleware = null): void;
+    /**
+     * @param mixed $path
+     * @param MiddlewareInterface|null $middleware
+     */
+    public function pipe($path, MiddlewareInterface $middleware = null): void;
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface;
 

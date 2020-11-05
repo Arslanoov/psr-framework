@@ -1,5 +1,7 @@
 up: docker-clear docker-build docker-up composer-install
-check: int cs
+validate: check test
+check: lint cs psalm
+test: tests-run
 
 docker-clear:
 	docker-compose down --remove-orphans
@@ -25,8 +27,20 @@ generate-migration:
 migrate:
 	docker-compose run --rm furious-php-cli php bin/console migrations:migrate
 
+tests-run:
+	docker-compose run --rm furious-php-cli php bin/phpunit
+
+unit-tests-run:
+	docker-compose run --rm furious-php-cli php bin/phpunit --testsuite=Unit
+
+functional-tests-run:
+	docker-compose run --rm furious-php-cli php bin/phpunit --testsuite=Functional
+
 lint:
 	docker-compose run --rm furious-php-cli composer lint
 
 cs:
 	docker-compose run --rm furious-php-cli composer cs-check
+
+psalm:
+	docker-compose run --rm furious-php-cli composer psalm

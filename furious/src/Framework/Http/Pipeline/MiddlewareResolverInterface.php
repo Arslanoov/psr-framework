@@ -7,7 +7,7 @@ namespace Framework\Http\Pipeline;
 interface MiddlewareResolverInterface
 {
     /**
-     * @param $handler
+     * @param mixed $handler
      * @return mixed
      */
     public function resolve($handler);

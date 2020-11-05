@@ -27,7 +27,7 @@ final class ErrorHandler implements MiddlewareInterface
         try {
             return $handler->handle($request);
         } catch (Throwable $e) {
-            $code = $e->getCode() ?: 500;
+            $code = (int) $e->getCode() ?: 500;
             return $this->response->json([
                 'error' => $this->canShowErrorMessage($code) ? $e->getMessage() : 'Something went wrong.'
             ], $code);

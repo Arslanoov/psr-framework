@@ -49,14 +49,19 @@ class FuriousMiddlewareResolver implements MiddlewareResolverInterface
             }
         }
 
+        /** @var string $handler */
         throw new UnknownMiddlewareType($handler);
     }
 
     private function createPipe(array $handlers): MiddlewarePipelineInterface
     {
+        /** @var MiddlewarePipelineInterface $pipeline */
         $pipeline = $this->container->get(MiddlewarePipelineInterface::class);
+        /** @var array<string> $handler */
         foreach ($handlers as $handler) {
-            $pipeline->pipe($this->resolve($handler));
+            /** @var MiddlewareInterface $middleware */
+            $middleware = $this->resolve($handler);
+            $pipeline->pipe($middleware);
         }
         return $pipeline;
     }
