@@ -13,7 +13,7 @@ docker-down:
 	docker-compose down
 
 composer-install:
-	docker-compose run --rm furious-php-cli compsoer install
+	docker-compose run --rm furious-php-cli composer install
 
 composer-update:
 	docker-compose run --rm furious-php-cli compsoer update

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Infrastructure\Framework\Http\Pipeline;
 
+use Framework\Http\Pipeline\Exception\UnknownMiddlewareType;
 use Framework\Http\Pipeline\Middleware\LazyMiddlewareDecorator;
 use Framework\Http\Pipeline\Middleware\SinglePassDecoratorMiddleware;
 use Framework\Http\Pipeline\MiddlewarePipelineInterface;
 use Framework\Http\Pipeline\MiddlewareResolverInterface;
-use Framework\Http\Pipeline\UnknownMiddlewareType;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;

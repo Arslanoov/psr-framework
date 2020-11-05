@@ -11,5 +11,6 @@ return static function (ApplicationInterface $app): void {
 
     $app->pipe(Middleware\ProfilerMiddleware::class);
     $app->pipe(new FrameworkMiddleware\RouteMiddleware($router));
+    $app->pipe(Middleware\ErrorHandler::class);
     $app->pipe(FrameworkMiddleware\DispatchMiddleware::class);
 };

@@ -17,18 +17,15 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class Application implements ApplicationInterface
 {
     private RouterInterface $router;
-    private RequestHandlerInterface $default;
     private MiddlewareResolverInterface $resolver;
     private MiddlewarePipelineInterface $pipeline;
 
     public function __construct(
         RouterInterface $router,
-        RequestHandlerInterface $default,
         MiddlewareResolverInterface $resolver,
         MiddlewarePipelineInterface $pipeline
     ) {
         $this->router = $router;
-        $this->default = $default;
         $this->resolver = $resolver;
         $this->pipeline = $pipeline;
     }
@@ -99,6 +96,6 @@ final class Application implements ApplicationInterface
 
     private function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->pipeline->process($request, $this->default);
+        return $this->pipeline->handle($request);
     }
 }
