@@ -43,9 +43,9 @@ return [
             'cache_dir' => __DIR__ . '/../../var/cache/doctrine/cache',
             'proxy_dir' => __DIR__ . '/../../var/cache/doctrine/proxy',
             'connection' => [
-                'driver' => 'pdo_pgsql',
-                'url' => 'postgresql://app:secret@furious-postgres:5432/app',
-                'charset' => 'utf-8'
+                'driver' => getenv('DATABASE_DRIVER'),
+                'url' => getenv('DATABASE_URL'),
+                'charset' => getenv('DATABASE_CHARSET')
             ],
             'metadata_dirs' => [
                 __DIR__ . '/../../src/Domain/Model'

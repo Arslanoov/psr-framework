@@ -25,7 +25,7 @@ return [
 
     'config' => [
         'app' => [
-            'debug' => true
+            'debug' => getenv('DEBUG') === 'true'
         ]
     ]
 ];
