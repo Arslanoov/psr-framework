@@ -17,3 +17,10 @@ composer-install:
 
 composer-update:
 	docker-compose run --rm furious-php-cli compsoer update
+
+generate-migration:
+	docker-compose run --rm furious-php-cli php bin/console migrations:diff
+
+migrate:
+	docker-compose run --rm furious-php-cli php bin/console migrations:migrate
+
