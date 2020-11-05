@@ -7,7 +7,7 @@ use Laminas\ConfigAggregator\PhpFileProvider;
 
 $aggregator = new ConfigAggregator([
     new PhpFileProvider(__DIR__ . '/common/*.php'),
-    new PhpFileProvider(__DIR__ . '/' . (ENV === 'dev' ?: 'prod') . '/*.php')
+    new PhpFileProvider(__DIR__ . '/' . (getenv('ENV') === 'dev' ?: 'prod') . '/*.php')
 ]);
 
 return $aggregator->getMergedConfig();

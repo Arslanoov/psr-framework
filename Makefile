@@ -1,4 +1,5 @@
 up: docker-clear docker-build docker-up composer-install
+check: int cs
 
 docker-clear:
 	docker-compose down --remove-orphans
@@ -26,3 +27,6 @@ migrate:
 
 lint:
 	docker-compose run --rm furious-php-cli composer lint
+
+cs:
+	docker-compose run --rm furious-php-cli composer cs-check

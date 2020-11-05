@@ -9,7 +9,6 @@ use Nyholm\Psr7Server\ServerRequestCreator;
 use Symfony\Component\Dotenv\Dotenv;
 
 chdir(dirname(__DIR__));
-define('ENV', 'dev');
 
 require './vendor/autoload.php';
 
