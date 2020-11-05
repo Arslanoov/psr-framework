@@ -5,7 +5,7 @@ services:
       context: ./docker
       dockerfile: dev/nginx/Dockerfile
     volumes:
-      - ./furious:/app
+      - ./:/app
     ports:
       - "8086:80"
     depends_on:
@@ -16,7 +16,7 @@ services:
       context: ./docker
       dockerfile: dev/php-fpm/Dockerfile
     volumes:
-      - ./furious:/app
+      - ./:/app
     depends_on:
       - furious-postgres
 
@@ -25,7 +25,7 @@ services:
       context: ./docker
       dockerfile: dev/php-cli/Dockerfile
     volumes:
-      - ./furious:/app
+      - ./:/app
       - composer:/root/.composer/cache
     depends_on:
       - furious-postgres
