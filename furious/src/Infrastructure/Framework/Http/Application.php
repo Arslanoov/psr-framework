@@ -12,23 +12,21 @@ use Framework\Http\Router\RouteData;
 use Framework\Http\Router\RouterInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 final class Application implements ApplicationInterface
 {
     private RouterInterface $router;
-    private RequestHandlerInterface $default;
     private MiddlewareResolverInterface $resolver;
     private MiddlewarePipelineInterface $pipeline;
 
     public function __construct(
         RouterInterface $router,
-        RequestHandlerInterface $default,
         MiddlewareResolverInterface $resolver,
         MiddlewarePipelineInterface $pipeline
     ) {
         $this->router = $router;
-        $this->default = $default;
         $this->resolver = $resolver;
         $this->pipeline = $pipeline;
     }
@@ -83,12 +81,21 @@ final class Application implements ApplicationInterface
         return $this->handle($request);
     }
 
-    public function pipe($path, $middleware = null): void
+    /**
+     * @param mixed $path
+     * @param MiddlewareInterface|null $middleware
+     */
+    public function pipe($path, MiddlewareInterface $middleware = null): void
     {
         if ($middleware === null) {
-            $this->pipeline->pipe($this->resolver->resolve($path));
+            /** @var MiddlewareInterface $middleware */
+            $middleware = $this->resolver->resolve($path);
+            $this->pipeline->pipe($middleware);
         } else {
-            $this->pipeline->pipe(new PathMiddlewareDecorator($path, $this->resolver->resolve($middleware)));
+            /** @var MiddlewareInterface $middleware */
+            $middleware = $this->resolver->resolve($middleware);
+            /** @var string $path */
+            $this->pipeline->pipe(new PathMiddlewareDecorator($path, $middleware));
         }
     }
 
@@ -99,6 +106,6 @@ final class Application implements ApplicationInterface
 
     private function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return $this->pipeline->process($request, $this->default);
+        return $this->pipeline->handle($request);
     }
 }

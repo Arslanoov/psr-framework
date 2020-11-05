@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Action;
+namespace Infrastructure\Application\Http\Action;
 
+use App\Http\Action\NotFoundHandlerInterface;
 use App\Http\Response\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 
-class NotFoundHandler implements RequestHandlerInterface
+final class NotFoundHandler implements NotFoundHandlerInterface
 {
     private ResponseFactory $response;
 
@@ -21,7 +21,7 @@ class NotFoundHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         return $this->response->json([
-            'error' => 'Page not found'
+            'error' => 'Page not found.'
         ], 404);
     }
 }

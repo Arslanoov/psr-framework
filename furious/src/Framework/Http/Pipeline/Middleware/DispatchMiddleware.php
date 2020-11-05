@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Framework\Http\Pipeline\Middleware;
 
-use Framework\Http\Pipeline\MiddlewareResolverInterface;
+use App\Http\Action\NotFoundHandlerInterface;
 use Framework\Http\Router\Result;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -14,27 +14,25 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 final class DispatchMiddleware implements MiddlewareInterface
 {
-    private MiddlewareResolverInterface $middlewareResolver;
     private ContainerInterface $container;
 
-    /**
-     * DispatchMiddleware constructor.
-     * @param MiddlewareResolverInterface $middlewareResolver
-     * @param ContainerInterface $container
-     */
-    public function __construct(MiddlewareResolverInterface $middlewareResolver, ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
-        $this->middlewareResolver = $middlewareResolver;
         $this->container = $container;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        /** @var Result $result */
-        if (!$result = $request->getAttribute(Result::class)) {
-            return $handler->handle($request);
+        /** @var Result|null $result */
+        $result = $request->getAttribute(Result::class);
+        if (!$result) {
+            /** @var RequestHandlerInterface $notFoundHandler */
+            $notFoundHandler = $this->container->get(NotFoundHandlerInterface::class);
+            return $notFoundHandler->handle($request);
         }
-        $middleware = $this->middlewareResolver->resolve($result->getHandler());
-        return $middleware->process($request, $handler);
+
+        /** @var RequestHandlerInterface $action */
+        $action = $this->container->get($result->getHandler());
+        return $action->handle($request);
     }
 }

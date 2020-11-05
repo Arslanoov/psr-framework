@@ -22,6 +22,7 @@ final class RouteData
         $this->name = $name;
         $this->path = $path;
         $this->handler = $handler;
+        /** @var array<string> $methods */
         $this->methods = array_map('mb_strtoupper', $methods);
         $this->options = $options;
     }

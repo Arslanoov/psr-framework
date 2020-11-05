@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Infrastructure\Framework\Http\Pipeline;
 
+use Framework\Http\Pipeline\Exception\UnknownMiddlewareType;
 use Framework\Http\Pipeline\Middleware\LazyMiddlewareDecorator;
 use Framework\Http\Pipeline\Middleware\SinglePassDecoratorMiddleware;
 use Framework\Http\Pipeline\MiddlewarePipelineInterface;
 use Framework\Http\Pipeline\MiddlewareResolverInterface;
-use Framework\Http\Pipeline\UnknownMiddlewareType;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -49,14 +49,19 @@ class FuriousMiddlewareResolver implements MiddlewareResolverInterface
             }
         }
 
+        /** @var string $handler */
         throw new UnknownMiddlewareType($handler);
     }
 
     private function createPipe(array $handlers): MiddlewarePipelineInterface
     {
+        /** @var MiddlewarePipelineInterface $pipeline */
         $pipeline = $this->container->get(MiddlewarePipelineInterface::class);
+        /** @var array<string> $handler */
         foreach ($handlers as $handler) {
-            $pipeline->pipe($this->resolve($handler));
+            /** @var MiddlewareInterface $middleware */
+            $middleware = $this->resolve($handler);
+            $pipeline->pipe($middleware);
         }
         return $pipeline;
     }

@@ -32,8 +32,11 @@ final class AuraRouterAdapter implements RouterInterface
     public function match(ServerRequestInterface $request): Result
     {
         $matcher = $this->aura->getMatcher();
+        /** @var Route $route */
         if ($route = $matcher->match($request)) {
-            return new Result($route->name, $route->handler, $route->attributes);
+            /** @var string $handler */
+            $handler = $route->handler;
+            return new Result($route->name, $handler, $route->attributes);
         }
 
         throw new RequestNotMatched($request);
@@ -43,7 +46,9 @@ final class AuraRouterAdapter implements RouterInterface
     {
         $generator = $this->aura->getGenerator();
         try {
-            return $generator->generate($name, $params);
+            /** @var string $result */
+            $result = $generator->generate($name, $params);
+            return $result;
         } catch (RouteNotFound $e) {
             throw new UnableToFoundRoute($name, $params);
         }
@@ -56,15 +61,22 @@ final class AuraRouterAdapter implements RouterInterface
         $route->path($data->path);
         $route->handler($data->handler);
 
+        /**
+         * @var string $name
+         * @var array|string $value
+         */
         foreach ($data->options as $name => $value) {
             switch ($name) {
                 case 'tokens':
+                    /** @var array $value */
                     $route->tokens($value);
                     break;
                 case 'defaults':
+                    /** @var array $value */
                     $route->defaults($value);
                     break;
                 case 'wildcard':
+                    /** @var string $value */
                     $route->wildcard($value);
                     break;
                 default:
