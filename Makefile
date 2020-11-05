@@ -24,3 +24,5 @@ generate-migration:
 migrate:
 	docker-compose run --rm furious-php-cli php bin/console migrations:migrate
 
+lint:
+	docker-compose run --rm furious-php-cli composer lint
