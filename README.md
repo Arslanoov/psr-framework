@@ -7,7 +7,7 @@
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
 Includes
-<ol>
+<ul>
     <li>PSR7 Implementation</li>
     <li>PSR15 Implementation</li>
     <li>Router</li>
@@ -20,7 +20,12 @@ Includes
     <li>Linter, code sniffer, static analyzers</li>
     <li>PHPUnit</li>
     <li>Makefile</li>
-</ol>
+</ul>
+
+TODO:
+<ul>
+    <li>Update to PHP8</li>
+</ul>
 
 Install:
 
